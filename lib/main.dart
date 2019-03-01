@@ -1,34 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:redux/redux.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux_persist_flutter/redux_persist_flutter.dart';
 
 import 'package:todolist/screens/todolist/todolist.screen.dart';
 import 'package:todolist/screens/loading.screen.dart';
-import 'package:todolist/models/app.state.dart';
-import 'package:todolist/middleware/middleware.dart';
-import 'package:todolist/store/store.dart';
+import 'package:todolist/states/app.state.dart';
+import 'package:todolist/states/todoList.state.dart';
+import 'package:todolist/reducers/app.reducer.dart';
+import 'package:todolist/app.dart';
 
-void main() => runApp(MyApp());
+void main() {
+  final Store store = Store<AppState>(appReducer,
+    initialState: new AppState(todoListState: new TodoListState()));
 
-class MyApp extends StatelessWidget {
-
-  final store = createStore();
-  
-  MyApp();
-
-  @override
-  Widget build(BuildContext context) {
-    return new PersistorGate(
-      persistor: persistor,
-      loading: new LoadingScreen(),
-      builder: (context) => new StoreProvider<AppState>(
-        store: store,
-        child: new MaterialApp(
-          title: 'Todo list',
-          home: new TodoListScreen()
-        )
-      )
-    );
-  }
-
+  runApp(App(store: store));
 }
